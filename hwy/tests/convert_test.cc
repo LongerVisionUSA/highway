@@ -16,6 +16,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
+#include "hwy/base.h"
 
 #undef HWY_TARGET_INCLUDE
 #define HWY_TARGET_INCLUDE "tests/convert_test.cc"
@@ -335,8 +336,6 @@ struct TestConvertU8 {
   template <typename T, class D>
   HWY_NOINLINE void operator()(T /*unused*/, const D du32) {
     const Rebind<uint8_t, D> du8;
-    auto lanes8 = AllocateAligned<uint8_t>(Lanes(du8));
-    Store(Iota(du8, 0), du8, lanes8.get());
     const auto wrap = Set(du32, 0xFF);
     HWY_ASSERT_VEC_EQ(du8, Iota(du8, 0), U8FromU32(And(Iota(du32, 0), wrap)));
     HWY_ASSERT_VEC_EQ(du8, Iota(du8, 0x7F),
@@ -346,6 +345,47 @@ struct TestConvertU8 {
 
 HWY_NOINLINE void TestAllConvertU8() {
   ForDemoteVectors<TestConvertU8, 2>()(uint32_t());
+}
+
+
+struct TestTruncateTo {
+  template <typename From, typename To, class D,
+            hwy::EnableIf<sizeof(To) >= sizeof(From)>* = nullptr>
+  HWY_NOINLINE void testTo(From, To, const D) {
+    // do nothing
+  }
+
+  template <
+      typename From, typename To, class D,
+      hwy::EnableIf<(sizeof(To) < sizeof(From))>* = nullptr>
+  HWY_NOINLINE void testTo(From from, To to, const D d) {
+    const Repartition<uint8_t, D> d8;
+    const Rebind<To, D> dTo;
+    const auto src = BitCast(d, Iota(d8, 0));
+    const auto storage = AllocateAligned<uint8_t>(Lanes(d8));
+    uint8_t* actual = storage.get();
+    const size_t fromPace = sizeof(from);
+    const size_t toPace = sizeof(to);
+    const VFromD<decltype(dTo)> dst = TruncateTo(dTo, src);
+    Store(dst, dTo, reinterpret_cast<To*>(actual));
+    for (size_t i = 0; i < Lanes(d); ++i) {
+      for (size_t j = 0; j < toPace; ++j) {
+        uint8_t expected = static_cast<uint8_t>(i * fromPace + j);
+        HWY_ASSERT_EQ(expected, actual[toPace * i + j]);
+      }
+    }
+  }
+
+  template <typename T, class D>
+  HWY_NOINLINE void operator()(T from, const D d) {
+    testTo(from, uint8_t(), d);
+    testTo(from, uint16_t(), d);
+    testTo(from, uint32_t(), d);
+  }
+};
+
+HWY_NOINLINE void TestAllTruncate() {
+  ForUnsignedTypes(ForGE128Vectors<TestTruncateTo>());
 }
 
 // Separate function to attempt to work around a compiler bug on ARM: when this
@@ -554,6 +594,7 @@ HWY_EXPORT_AND_TEST_P(HwyConvertTest, TestAllPromoteTo);
 HWY_EXPORT_AND_TEST_P(HwyConvertTest, TestAllF16);
 HWY_EXPORT_AND_TEST_P(HwyConvertTest, TestAllBF16);
 HWY_EXPORT_AND_TEST_P(HwyConvertTest, TestAllConvertU8);
+HWY_EXPORT_AND_TEST_P(HwyConvertTest, TestAllTruncate);
 HWY_EXPORT_AND_TEST_P(HwyConvertTest, TestAllIntFromFloat);
 HWY_EXPORT_AND_TEST_P(HwyConvertTest, TestAllFloatFromInt);
 HWY_EXPORT_AND_TEST_P(HwyConvertTest, TestAllI32F64);

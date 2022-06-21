@@ -1690,6 +1690,109 @@ HWY_API vuint8m2_t U8FromU32(const vuint32m8_t v) {
   return vnclipu_wx_u8m2(vnclipu_wx_u16m4(v, 0, avl), 0, avl);
 }
 
+// ------------------------------ Truncations
+
+HWY_API vuint8mf8_t TruncateTo(DFromV<vuint8mf8_t> /* tag */,
+                               const vuint32mf2_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, -3>());
+  const vuint16mf4_t v2 = vnclipu_wx_u16mf4(v, 0, avl);
+  return vnclipu_wx_u8mf8(v2, 0, avl);
+}
+
+HWY_API vuint8mf4_t TruncateTo(DFromV<vuint8mf4_t> /* tag */,
+                               const vuint32m1_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, -2>());
+  const vuint16mf2_t v2 = vnclipu_wx_u16mf2(v, 0, avl);
+  return vnclipu_wx_u8mf4(v2, 0, avl);
+}
+
+HWY_API vuint8mf2_t TruncateTo(DFromV<vuint8mf2_t> /* tag */,
+                               const vuint32m2_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, -1>());
+  const vuint16m1_t v2 = vnclipu_wx_u16m1(v, 0, avl);
+  return vnclipu_wx_u8mf2(v2, 0, avl);
+}
+
+HWY_API vuint8m1_t TruncateTo(DFromV<vuint8m1_t> /* tag */,
+                              const vuint32m4_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, 0>());
+  const vuint16m2_t v2 = vnclipu_wx_u16m2(v, 0, avl);
+  return vnclipu_wx_u8m1(v2, 0, avl);
+}
+
+HWY_API vuint8m2_t TruncateTo(DFromV<vuint8m2_t> /* tag */,
+                              const vuint32m8_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, 1>());
+  const vuint16m4_t v2 = vnclipu_wx_u16m4(v, 0, avl);
+  return vnclipu_wx_u8m2(v2, 0, avl);
+}
+
+HWY_API vuint16mf4_t TruncateTo(DFromV<vuint16mf4_t> /* tag */,
+                                const vuint32mf2_t v) {
+  const size_t avl = Lanes(ScalableTag<uint16_t, -2>());
+  return vnclipu_wx_u16mf4(v, 0, avl);
+}
+
+HWY_API vuint16mf2_t TruncateTo(DFromV<vuint16mf2_t> /* tag */,
+                                const vuint32m1_t v) {
+  const size_t avl = Lanes(ScalableTag<uint16_t, -1>());
+  return vnclipu_wx_u16mf2(v, 0, avl);
+}
+
+HWY_API vuint16m1_t TruncateTo(DFromV<vuint16m1_t> /* tag */,
+                               const vuint32m2_t v) {
+  const size_t avl = Lanes(ScalableTag<uint16_t, 0>());
+  return vnclipu_wx_u16m1(v, 0, avl);
+}
+
+HWY_API vuint16m2_t TruncateTo(DFromV<vuint16m2_t> /* tag */,
+                               const vuint32m4_t v) {
+  const size_t avl = Lanes(ScalableTag<uint16_t, 1>());
+  return vnclipu_wx_u16m2(v, 0, avl);
+}
+
+HWY_API vuint16m4_t TruncateTo(DFromV<vuint16m4_t> /* tag */,
+                               const vuint32m8_t v) {
+  const size_t avl = Lanes(ScalableTag<uint16_t, 2>());
+  return vnclipu_wx_u16m4(v, 0, avl);
+}
+
+HWY_API vuint8mf8_t TruncateTo(DFromV<vuint8mf8_t> /* tag */,
+                               const vuint16mf4_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, -3>());
+  return vnclipu_wx_u8mf8(v, 0, avl);
+}
+
+HWY_API vuint8mf4_t TruncateTo(DFromV<vuint8mf4_t> /* tag */,
+                               const vuint16mf2_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, -2>());
+  return vnclipu_wx_u8mf4(v, 0, avl);
+}
+
+HWY_API vuint8mf2_t TruncateTo(DFromV<vuint8mf2_t> /* tag */,
+                               const vuint16m1_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, -1>());
+  return vnclipu_wx_u8mf2(v, 0, avl);
+}
+
+HWY_API vuint8m1_t TruncateTo(DFromV<vuint8m1_t> /* tag */,
+                              const vuint16m2_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, 0>());
+  return vnclipu_wx_u8m1(v, 0, avl);
+}
+
+HWY_API vuint8m2_t TruncateTo(DFromV<vuint8m2_t> /* tag */,
+                              const vuint16m4_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, 1>());
+  return vnclipu_wx_u8m2(v, 0, avl);
+}
+
+HWY_API vuint8m4_t TruncateTo(DFromV<vuint8m4_t> /* tag */,
+                              const vuint16m8_t v) {
+  const size_t avl = Lanes(ScalableTag<uint8_t, 2>());
+  return vnclipu_wx_u8m4(v, 0, avl);
+}
+
 // ------------------------------ DemoteTo I
 
 HWY_RVV_FOREACH_I16(HWY_RVV_DEMOTE, DemoteTo, vnclip_wx_, _DEMOTE_VIRT)

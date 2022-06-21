@@ -5457,6 +5457,52 @@ HWY_API Vec128<uint8_t, N> U8FromU32(const Vec128<uint32_t, N> v) {
   return LowerHalf(LowerHalf(BitCast(d8, quad)));
 }
 
+// ------------------------------ Truncations
+
+HWY_API Vec128<uint8_t, 2> TruncateTo(Simd<uint8_t, 2, 0> /* tag */,
+                                      const Vec128<uint64_t> v) {
+  const Full128<uint8_t> d8;
+  alignas(16) static constexpr uint8_t kMap[16] = {0, 8, 0, 8, 0, 8, 0, 8,
+                                                   0, 8, 0, 8, 0, 8, 0, 8};
+  return LowerHalf(LowerHalf(LowerHalf(TableLookupBytes(v, Load(d8, kMap)))));
+}
+
+HWY_API Vec128<uint16_t, 2> TruncateTo(Simd<uint16_t, 2, 0> /* tag */,
+                                       const Vec128<uint64_t> v) {
+  const Full128<uint16_t> d16;
+  alignas(16) static constexpr uint16_t kMap[8] = {
+      0x100u, 0x908u, 0x100u, 0x908u, 0x100u, 0x908u, 0x100u, 0x908u};
+  return LowerHalf(LowerHalf(TableLookupBytes(v, Load(d16, kMap))));
+}
+
+HWY_API Vec128<uint32_t, 2> TruncateTo(Simd<uint32_t, 2, 0> /* tag */,
+                                       const Vec128<uint64_t> v) {
+  return Vec128<uint32_t, 2>{_mm_shuffle_epi32(v.raw, 0x88)};
+}
+
+HWY_API Vec128<uint8_t, 4> TruncateTo(Simd<uint8_t, 4, 0> /* tag */,
+                                      const Vec128<uint32_t> v) {
+  const Full128<uint8_t> d8;
+  alignas(16) static constexpr uint8_t kMap[16] = {
+      0x0u, 0x4u, 0x8u, 0xCu, 0x0u, 0x4u, 0x8u, 0xCu,
+      0x0u, 0x4u, 0x8u, 0xCu, 0x0u, 0x4u, 0x8u, 0xCu};
+  return LowerHalf(LowerHalf(TableLookupBytes(v, Load(d8, kMap))));
+}
+
+HWY_API Vec128<uint16_t, 4> TruncateTo(Simd<uint16_t, 4, 0> /* tag */,
+                                       const Vec128<uint32_t> v) {
+  const Full128<uint16_t> d16;
+  const auto v1 = BitCast(d16, v);
+  return LowerHalf(ConcatEven(d16, v1, v1));
+}
+
+HWY_API Vec128<uint8_t, 8> TruncateTo(Simd<uint8_t, 8, 0> /* tag */,
+                                      const Vec128<uint16_t> v) {
+  const Full128<uint8_t> d8;
+  const auto v1 = BitCast(d8, v);
+  return LowerHalf(ConcatEven(d8, v1, v1));
+}
+
 // ------------------------------ Integer <=> fp (ShiftRight, OddEven)
 
 template <size_t N>

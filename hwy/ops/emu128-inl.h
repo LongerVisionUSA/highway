@@ -1610,6 +1610,62 @@ HWY_API Vec128<uint8_t, N> U8FromU32(const Vec128<uint32_t, N> v) {
   return DemoteTo(Simd<uint8_t, N, 0>(), v);
 }
 
+// ------------------------------ Truncations
+
+HWY_API Vec128<uint8_t, 2> TruncateTo(Simd<uint8_t, 2, 0> /* tag */,
+                                      const Vec128<uint64_t> v) {
+  Vec128<uint8_t, 2> ret;
+  for (size_t i = 0; i < 2; ++i) {
+    ret.raw[i] = static_cast<uint8_t>(v.raw[i]);
+  }
+  return ret;
+}
+
+HWY_API Vec128<uint16_t, 2> TruncateTo(Simd<uint16_t, 2, 0> /* tag */,
+                                       const Vec128<uint64_t> v) {
+  Vec128<uint16_t, 2> ret;
+  for (size_t i = 0; i < 2; ++i) {
+    ret.raw[i] = static_cast<uint16_t>(v.raw[i]);
+  }
+  return ret;
+}
+
+HWY_API Vec128<uint32_t, 2> TruncateTo(Simd<uint32_t, 2, 0> /* tag */,
+                                       const Vec128<uint64_t> v) {
+  Vec128<uint32_t, 2> ret;
+  for (size_t i = 0; i < 2; ++i) {
+    ret.raw[i] = static_cast<uint32_t>(v.raw[i]);
+  }
+  return ret;
+}
+
+HWY_API Vec128<uint8_t, 4> TruncateTo(Simd<uint8_t, 4, 0> /* tag */,
+                                      const Vec128<uint32_t> v) {
+  Vec128<uint8_t, 4> ret;
+  for (size_t i = 0; i < 4; ++i) {
+    ret.raw[i] = static_cast<uint8_t>(v.raw[i]);
+  }
+  return ret;
+}
+
+HWY_API Vec128<uint16_t, 4> TruncateTo(Simd<uint16_t, 4, 0> /* tag */,
+                                       const Vec128<uint32_t> v) {
+  Vec128<uint16_t, 4> ret;
+  for (size_t i = 0; i < 4; ++i) {
+    ret.raw[i] = static_cast<uint16_t>(v.raw[i]);
+  }
+  return ret;
+}
+
+HWY_API Vec128<uint8_t, 8> TruncateTo(Simd<uint8_t, 8, 0> /* tag */,
+                                      const Vec128<uint16_t> v) {
+  Vec128<uint8_t, 8> ret;
+  for (size_t i = 0; i < 8; ++i) {
+    ret.raw[i] = static_cast<uint8_t>(v.raw[i]);
+  }
+  return ret;
+}
+
 // ================================================== COMBINE
 
 template <typename T, size_t N>

@@ -3242,6 +3242,60 @@ HWY_API Vec128<uint8_t, N> U8FromU32(const Vec128<uint32_t, N> v) {
   return Vec128<uint8_t, N>(vuzp1_u8(w, w));
 }
 
+// ------------------------------ Truncations
+
+HWY_API Vec128<uint8_t, 2> TruncateTo(Simd<uint8_t, 2, 0> /* tag */,
+                                      const Vec128<uint64_t> v) {
+  const uint8x16_t v1 = vreinterpretq_u8_u64(v.raw);
+  const uint8x16_t v2 = vuzp1q_u8(v1, v1);
+  const uint8x16_t v3 = vuzp1q_u8(v2, v2);
+  const uint8x16_t v4 = vuzp1q_u8(v3, v3);
+  const uint8x8_t v5 = vget_low_u8(v4);
+  return Vec128<uint8_t, 2>(v5);
+}
+
+HWY_API Vec32<uint16_t> TruncateTo(Simd<uint16_t, 2, 0> /* tag */,
+                                   const Vec128<uint64_t> v) {
+  const uint16x8_t v1 = vreinterpretq_u16_u64(v.raw);
+  const uint16x8_t v2 = vuzp1q_u16(v1, v1);
+  const uint16x8_t v3 = vuzp1q_u16(v2, v2);
+  const uint16x4_t v4 = vget_low_u16(v3);
+  return Vec32<uint16_t>(v4);
+}
+
+HWY_API Vec64<uint32_t> TruncateTo(Simd<uint32_t, 2, 0> /* tag */,
+                                   const Vec128<uint64_t> v) {
+  const uint32x4_t v1 = vreinterpretq_u32_u64(v.raw);
+  const uint32x4_t v2 = vuzp1q_u32(v1, v1);
+  const uint32x2_t v3 = vget_low_u32(v2);
+  return Vec64<uint32_t>(v3);
+}
+
+HWY_API Vec32<uint8_t> TruncateTo(Simd<uint8_t, 4, 0> /* tag */,
+                                  const Vec128<uint32_t> v) {
+  const uint8x16_t v1 = vreinterpretq_u8_u32(v.raw);
+  const uint8x16_t v2 = vuzp1q_u8(v1, v1);
+  const uint8x16_t v3 = vuzp1q_u8(v2, v2);
+  const uint8x8_t v4 = vget_low_u8(v3);
+  return Vec32<uint8_t>(v4);
+}
+
+HWY_API Vec64<uint16_t> TruncateTo(Simd<uint16_t, 4, 0> /* tag */,
+                                   const Vec128<uint32_t> v) {
+  const uint16x8_t v1 = vreinterpretq_u16_u32(v.raw);
+  const uint16x8_t v2 = vuzp1q_u16(v1, v1);
+  const uint16x4_t v3 = vget_low_u16(v2);
+  return Vec64<uint16_t>(v3);
+}
+
+HWY_API Vec64<uint8_t> TruncateTo(Simd<uint8_t, 8, 0> /* tag */,
+                                  const Vec128<uint16_t> v) {
+  const uint8x16_t v1 = vreinterpretq_u8_u16(v.raw);
+  const uint8x16_t v2 = vuzp1q_u8(v1, v1);
+  const uint8x8_t v3 = vget_low_u8(v2);
+  return Vec64<uint8_t>(v3);
+}
+
 // In the following DemoteTo functions, |b| is purposely undefined.
 // The value a needs to be extended to 128 bits so that vqmovn can be
 // used and |b| is undefined so that no extra overhead is introduced.
